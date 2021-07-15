@@ -143,6 +143,7 @@ class CourseRegisterView(View):
             filename      = S3FileUpload.generate_filname(image_url=image_file)
             
             S3FileUpload.file_upload(filename, **resize_images)
+            
             uploaded_image_url = AWS_S3_FILE_URL % (filename["image_url"])            
 
             Course.objects.create(
