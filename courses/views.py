@@ -1,29 +1,19 @@
-<<<<<<< HEAD
-import json, random, boto3
-from uuid                  import uuid4
-=======
 import json
->>>>>>> 827fdcf... ADD: CourseReviewView
+import random
+from s3_util import S3FileUpload
+import boto3
+from uuid                  import uuid4
 
 from django.views          import View
 from django.http           import JsonResponse
 from django.db.models      import Count, Q
 from django.core.paginator import Paginator, EmptyPage
 
-<<<<<<< HEAD
-from create101.settings    import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
-from my_settings           import AWS_URL, SAMPLE_IMAGES
 from courses.models        import Category, Course, SubCategory, Review
-from users.models          import User, Like, Comment
 from courses.utils         import get_user
 from decorator             import validate_login
-=======
-from decorator             import validate_login
-from my_settings           import SECRET_KEY, ALGORITHM
-from courses.utils         import get_user
-from courses.models        import Course, Category, SubCategory, Review
 from users.models          import Like, Comment, User
->>>>>>> 827fdcf... ADD: CourseReviewView
+from create101.settings    import AWS_S3_FILE_URL
 
 class CategoryView(View):
     def get(self, request):
@@ -144,32 +134,22 @@ class CourseListView(View):
         
         return JsonResponse({'courses':results, 'page_list':page_list}, status=200)
 class CourseRegisterView(View):
-    s3_client = boto3.client(
-        's3',
-        aws_access_key_id=AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=AWS_SECRET_ACCESS_KEY
-    )
     @validate_login
     def post(self, request):
         try:
-            image      = request.FILES['image']
-            my_uuid    = str(uuid4())
-            self.s3_client.upload_fileobj(
-                image,
-                "thumbnailofcourse",
-                my_uuid,
-                ExtraArgs={
-                    "ContentType": image.content_type
-                }
-            )
-            image_url = AWS_URL + my_uuid
-            data            = json.loads(request.POST['course'])
-            description_img = SAMPLE_IMAGES
+            data          = json.loads(request.POST['course'])
+            image_file    = request.FILES['image']
+            resize_images = S3FileUpload.resize_image(image_url=image_file)
+            filename      = S3FileUpload.generate_filname(image_url=image_file)
+            
+            S3FileUpload.file_upload(filename, **resize_images)
+            uploaded_image_url = AWS_S3_FILE_URL % (filename["image_url"])            
+
             Course.objects.create(
                 title           = data['title'],
                 price           = data['price'],
-                thumbnail       = image_url,
-                description     = random.choice(description_img),
+                thumbnail       = uploaded_image_url,
+                description     = random.choice(uploaded_image_url),
                 month           = data['month'],
                 target_id       = data['target'],
                 sub_category_id = data['sub_category'],
