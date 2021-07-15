@@ -10,8 +10,23 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 from pathlib import Path
-from my_settings import SECRET_KEY, DATABASES, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+from my_settings import DATABASES, SECRET_KEY, AWS_S3_ACCESS_KEY_ID, AWS_S3_SECRET_ACCESS_KEY, AWS_S3_STORAGE_BUCKET_NAME, AWS_S3_REGION_NAME
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = SECRET_KEY
+
+# AWS S3 이미지 업로드
+AWS_S3_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID
+AWS_S3_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY
+AWS_S3_STORAGE_BUCKET_NAME = AWS_S3_STORAGE_BUCKET_NAME
+AWS_S3_REGION_NAME = AWS_S3_REGION_NAME
+
+AWS_S3_CUSTOM_DOMAIN = (
+    f"{AWS_S3_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com"
+)
+AWS_S3_FILE_URL = (
+    f"https://{AWS_S3_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/%s"
+)
 LOGGING = {
     'disable_existing_loggers': False,
     'version': 1,
@@ -36,9 +51,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -141,10 +153,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AWS_ACCESS_KEY_ID = AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY = AWS_SECRET_ACCESS_KEY
-AWS_STORAGE_BUCKET_NAME = 'thumbnailofcourse'
-AWS_QUERYSTRING_AUTH = False
+
 
 #REMOVE_APPEND_SLASH_WARNING
 APPEND_SLASH = False
