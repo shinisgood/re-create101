@@ -1,29 +1,18 @@
-<<<<<<< HEAD
-import json, random, boto3
-from uuid                  import uuid4
-=======
 import json
->>>>>>> 827fdcf... ADD: CourseReviewView
+import random
+import boto3
+from uuid                  import uuid4
 
 from django.views          import View
 from django.http           import JsonResponse
 from django.db.models      import Count, Q
 from django.core.paginator import Paginator, EmptyPage
 
-<<<<<<< HEAD
-from create101.settings    import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
-from my_settings           import AWS_URL, SAMPLE_IMAGES
-from courses.models        import Category, Course, SubCategory, Review
-from users.models          import User, Like, Comment
-from courses.utils         import get_user
-from decorator             import validate_login
-=======
 from decorator             import validate_login
 from my_settings           import SECRET_KEY, ALGORITHM
 from courses.utils         import get_user
 from courses.models        import Course, Category, SubCategory, Review
 from users.models          import Like, Comment, User
->>>>>>> 827fdcf... ADD: CourseReviewView
 
 class CategoryView(View):
     def get(self, request):
